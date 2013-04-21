@@ -25,27 +25,27 @@ void loop()
   if(firstTimeInLoop){
     GPRS.write("AT+CGATT=1"); //Attach a GPRS Service
     GPRS.write("\n\r");
-    GPRS.write("AT+CGDCONT=1,\"IP\",\"airtelgprs.com\"");
+    GPRS.write("AT+CGDCONT=1,\"IP\",\"airtelgprs.com\"");  //Define PDP Context
     GPRS.write("\n\r");
-    GPRS.write("AT+CDNSCFG=\"208.67.222.222\",\"208.67.220.220\"");
+    GPRS.write("AT+CDNSCFG=\"208.67.222.222\",\"208.67.220.220\"");  //Configure Domain Name Server
     GPRS.write("\n\r");
-    GPRS.write("AT+CSTT=\"airtelgprs.com\",\"\",\"\"");
+    GPRS.write("AT+CSTT=\"airtelgprs.com\",\"\",\"\"");  //Start Task & set APN, User ID, and password
     GPRS.write("\n\r");
-    GPRS.write("AT+CIICR");
+    GPRS.write("AT+CIICR");  //Bring up wireless connection with GPRS  P.S.  Time consuming
     GPRS.write("\n\r");
-    GPRS.write("AT+CIFSR");
+    GPRS.write("AT+CIFSR");  // Get Local IP address 
     GPRS.write("\n\r");
-    GPRS.write("AT+CIPSTATUS");
+    GPRS.write("AT+CIPSTATUS");  // Get Connection Status P.S.  It should be 'IP STATUS'
     GPRS.write("\n\r");
-    GPRS.write("AT+CDNSORIP=1");
+    GPRS.write("AT+CDNSORIP=1");  //Indicates whether connection request will be IP address (0), or domain name (1)
     GPRS.write("\n\r");
-    GPRS.write("AT+CIPHEAD=1");
+    GPRS.write("AT+CIPHEAD=1"); //Attach Headers ..  P.S. I really don't know what it does 
     GPRS.write("\n\r");
-    GPRS.write("AT+CIPSTART=\"TCP\",\"www.nationalyouthparty.org\",\"80\"");
+    GPRS.write("AT+CIPSTART=\"TCP\",\"www.nationalyouthparty.org\",\"80\"");  //Start up TCP connection (mode, IP address/name, port) P.S. if returns 'CONNECT OK' then you're lucky
     GPRS.write("\n\r");
-    GPRS.write("AT+CIPSEND");
+    GPRS.write("AT+CIPSEND");  // Send the Data
     GPRS.write("\n\r");
-    GPRS.write("GET /stick/mail.php HTTP/1.1");
+    GPRS.write("GET /stick/mail.php HTTP/1.1");  //It's the actual HTTP request finally
     GPRS.write(ctrlZ);
     GPRS.write("\n\r");
     
