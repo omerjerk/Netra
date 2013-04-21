@@ -11,6 +11,7 @@ SoftwareSerial GPRS(2, 3);
 unsigned char buffer[64]; // buffer array for data recieve over serial port
 int count=0;     // counter for buffer array
 boolean firstTimeInLoop = 1;
+char ctrlZ = 0x1A;
 void setup()
 {
   GPRS.begin(9600);               // the GPRS baud rate   
@@ -22,7 +23,7 @@ void setup()
 void loop()
 {
   if(firstTimeInLoop){
-    GPRS.write("AT+CGATT=1");
+    GPRS.write("AT+CGATT=1"); //Attach a GPRS Service
     GPRS.write("\n\r");
     GPRS.write("AT+CGDCONT=1,\"IP\",\"airtelgprs.com\"");
     GPRS.write("\n\r");
@@ -44,9 +45,10 @@ void loop()
     GPRS.write("\n\r");
     GPRS.write("AT+CIPSEND");
     GPRS.write("\n\r");
-    delay(2000);
-    GPRS.write("GET http://www.nationalyouthparty.org/stick/mail.php HTTP/1.1^Z");
+    GPRS.write("GET /stick/mail.php HTTP/1.1");
+    GPRS.write(ctrlZ);
     GPRS.write("\n\r");
+    
     firstTimeInLoop = 0;
   }
   
