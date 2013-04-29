@@ -6,23 +6,22 @@
 //Computer is connected to Hardware UART
 //GPRS Shield is connected to the Software UART 
  
-
 SoftwareSerial GPRS(2, 3);
 unsigned char buffer[64]; // buffer array for data recieve over serial port
 int count=0;     // counter for buffer array
-boolean firstTimeInLoop = 1;
+boolean inLoop = 0;
 char ctrlZ = 0x1A;
+float latitude , longitude;
 void setup()
 {
   GPRS.begin(9600);               // the GPRS baud rate   
-  Serial.begin(9600);             // the Serial port of Arduino baud rate.
-  
+  Serial.begin(9600);
  
 }
  
 void loop()
 {
-  if(firstTimeInLoop){
+  do{
     GPRS.write("AT+CGATT=1"); //Attach a GPRS Service
     GPRS.write("\n\r");
     GPRS.write("AT+CGDCONT=1,\"IP\",\"airtelgprs.com\"");  //Define PDP Context
@@ -41,27 +40,12 @@ void loop()
     GPRS.write("\n\r");
     GPRS.write("AT+CDNSORIP=1");  //Indicates whether connection request will be IP address (0), or domain name (1)
     GPRS.write("\n\r");
-    GPRS.write("AT+CIPSTART=\"TCP\",\"www.nationalyouthparty.org\",\"80\"");  //Start up TCP connection (mode, IP address/name, port) P.S. if returns 'CONNECT OK' then you're lucky
-    GPRS.write("\n\r");
-    GPRS.write("AT+CIPSEND");  // Send the Data
-    GPRS.write("\n\r");
-    GPRS.write("GET /stick/mail.php HTTP/1.1");   //It's the actual HTTP request finally
-    GPRS.write("\n");
-    GPRS.write("Host: www.nationalyouthparty.org");
-    GPRS.write("\n");
-    GPRS.write("Connection: keep-alive");
-    GPRS.write("\n");
-    GPRS.write("Accept: */");
-    GPRS.write("*");
-    GPRS.write("\n");
-    GPRS.write("Accept-Language: en-us");
-    GPRS.write("\n\r");
-    GPRS.write("\n");
-    GPRS.write(ctrlZ);
+    GPRS.write("AT+CIPSTART=\"TCP\",\"www.ludlowcastle.co.in\",\"80\"");  //Start up TCP connection (mode, IP address/name, port) P.S. if returns 'CONNECT OK' then you're lucky
     GPRS.write("\n\r");
     
-    firstTimeInLoop = 0;
-  }
+    ++inLoop;
+    delay(1000);
+  } while (inLoop < 4);
   
   if (GPRS.available())              // if date is comming from softwareserial port ==> data is comming from gprs shield
   {
@@ -80,10 +64,33 @@ void loop()
     { 
       GPRS.write(Serial.read());
   }      // write it to the GPRS shield
+  
+  updateLocation(23.6780,34.3458);
 }
 void clearBufferArray()              // function to clear buffer array
 {
   for (int i=0; i<count;i++)
     { buffer[i]=NULL;}                  // clear all index of array with command NULL
+}
+
+void updateLocation(float lat, float lon){
+    delay(7000);
+    GPRS.write("AT+CIPSEND");  // Send the Data
+    GPRS.write("\n\r");
+    Serial.print("\nSending Location Data !!\n");
+    GPRS.write("GET /stick/updateLoc.php HTTP/1.1");   //It's the actual HTTP request finally
+    GPRS.write("\n");
+    GPRS.write("Host: www.ludlowcastle.co.in");
+    GPRS.write("\n");
+    GPRS.write("Connection: keep-alive");
+    GPRS.write("\n");
+    GPRS.write("Accept: */");
+    GPRS.write("*");
+    GPRS.write("\n");
+    GPRS.write("Accept-Language: en-us");
+    GPRS.write("\n\r");
+    GPRS.write("\n");
+    GPRS.write(ctrlZ);
+    GPRS.write("\n\r");
 }
 
