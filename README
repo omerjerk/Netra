@@ -1,1 +1,1 @@
-Arduino code to make an HTTP request from the SIM300 GSM/GPRS module.
+Arduino code to send SMS from the SIM300 GSM/GPRS module.
